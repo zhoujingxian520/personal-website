@@ -80,3 +80,7 @@ npm.cmd run export-preview
 - [第二阶段验证记录](docs/第二阶段验证记录.md)：本次检查结果和待验证项。
 
 当前仓库根目录就是源码目录。`outputs/`、`dist/`、`node_modules/`、`.astro/` 均为本地生成目录，不提交 Git。修改 Markdown 后，开发预览会更新；离线 HTML 需要重新导出。
+
+## 动态文字回归检查
+
+运行 `npm.cmd run check:interactions`。使用当前 Node.js 自带的 TypeScript 类型移除能力和测试工具，不增加依赖。检查覆盖打字循环、后台暂停恢复和减少动态效果；不替代真实浏览器的视觉验收。

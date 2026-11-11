@@ -7,7 +7,8 @@
     "dev": "astro dev --host 127.0.0.1",
     "build": "astro build",
     "preview": "astro preview --host 127.0.0.1",
-    "export-preview": "node scripts/export-preview.mjs"
+    "export-preview": "node scripts/export-preview.mjs",
+    "check:interactions": "node --test scripts/check-interactions.mjs"
   },
   "dependencies": { "astro": "7.4.8" }
 }
