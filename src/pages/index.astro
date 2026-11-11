@@ -44,6 +44,7 @@ const nav = [{href:'#home',name:'首页',icon:'home'},{href:'#projects',name:'�
         <div class="hero-bottom"><span>PROJECTS, NOTES & LITTLE WONDERS</span><span>保持好奇 · 慢慢生长</span></div>
       </section>
       <div class="content-world" style={site.background ? `--world-image: url('${site.background}')` : undefined} data-background={site.background ? 'image' : 'placeholder'}>
+        {site.background && <div class="world-backdrop" aria-hidden="true"></div>}
         <div class="content-inner">
           <div class="intro-strip"><p>在这里，把想法变成作品，把学习留成足迹。</p><span class="intro-mark" aria-hidden="true">✳</span></div>
           <section id="projects" class="projects-section section-anchor" aria-labelledby="projects-heading">

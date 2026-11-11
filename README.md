@@ -20,7 +20,7 @@ npm.cmd run dev
 
 打开 `src/site.config.ts` 修改 `name` 和 `welcome`。
 
-封面为 `public/images/cover.webp`；原始上传图片也保存在同一目录。正文背景目前留空，使用中性色占位。收到之前第一张图后，将它放进 `public/images/`，把配置中的 `background` 改成对应路径，例如 `/images/background.webp`。页面会自动启用背景图、模糊与遮罩。
+封面为 `public/images/cover.webp`；原始上传图片也保存在同一目录。正文背景为 `public/images/background.webp`，原图为同目录的 `background-original.png`。更换图片时放入 `public/images/`，把配置中的 `background` 改成对应路径。页面会自动启用背景图、模糊与遮罩。
 
 ## 用 Markdown 管理内容
 
@@ -69,7 +69,7 @@ npm.cmd run export-preview
 
 ## 已知限制
 
-内容目前是明确标注的示例，第一张正文背景图尚待补充。技能树只预留位置，完整文章页面不在第一版范围内。
+内容目前是明确标注的示例，正文背景图已接入。技能树只预留位置，完整文章页面不在第一版范围内。
 
 ## 内容模板与工作文档
 
