@@ -1,0 +1,11 @@
+---
+import { site } from '../site.config';
+---
+{site.skillTree.enabled && (
+  <section id="skill-tree" class="skill-section section-anchor" aria-labelledby="skill-heading" data-feature="skill-tree" data-implemented={String(site.skillTree.implemented)}>
+    <div class="tree-art" aria-hidden="true">
+      <svg viewBox="0 0 300 220" fill="none"><path d="M150 181V127M150 127L76 86M150 127L224 86M76 86V35M224 86V35M150 127V44" stroke="currentColor" stroke-width="1"/><circle cx="150" cy="181" r="14"/><circle cx="150" cy="127" r="10"/><circle cx="76" cy="86" r="10"/><circle cx="224" cy="86" r="10"/><circle cx="76" cy="35" r="7"/><circle cx="224" cy="35" r="7"/><circle cx="150" cy="44" r="7"/></svg>
+    </div>
+    <div class="skill-copy"><span class="eyebrow">03 / THE NEXT CHAPTER</span><h2 id="skill-heading">让知识，生长成树。</h2><p>把一个个理解的瞬间，连成自己的算法地图。<br/>这个角落，留给未来的技能树。</p><span class="coming"><span></span> 后续开放</span></div>
+  </section>
+)}

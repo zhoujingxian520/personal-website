@@ -1,0 +1,67 @@
+---
+import { getCollection, render } from 'astro:content';
+import { site } from '../site.config';
+import SkillTree from '../components/SkillTree.astro';
+import '../styles/global.css';
+const projectEntries = (await getCollection('projects')).sort((a,b) => a.data.order-b.data.order);
+const learningEntries = (await getCollection('learning')).sort((a,b) => a.data.order-b.data.order);
+const projects = await Promise.all(projectEntries.map(async entry => ({...entry, ...await render(entry)})));
+const learning = await Promise.all(learningEntries.map(async entry => ({...entry, ...await render(entry)})));
+const nav = [{href:'#home',name:'首页',icon:'home'},{href:'#projects',name:'项目',icon:'grid'},{href:'#learning',name:'学习',icon:'book'}, ...(site.skillTree.enabled ? [{href:site.skillTree.href,name:'技能树',icon:'tree'}] : [])];
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="一个收藏项目、记录学习与灵感的个人空间。"/>
+    <meta name="theme-color" content="#f2ede7"/><title>{site.name} · 项目与学习手记</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="preload" as="image" href={site.cover}/>
+  </head>
+  <body>
+    <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h5v-7h4v7h5V9"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1v14"/></symbol>
+      <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 20V9M5 5v4l7 4 7-4V5"/><circle cx="5" cy="4" r="2"/><circle cx="19" cy="4" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="12" cy="20" r="2"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    </defs></svg>
+    <a class="skip-link" href="#projects">跳到主要内容</a>
+    <button class="menu-scrim" id="menu-scrim" aria-label="关闭导航" hidden tabindex="-1"></button>
+    <nav class="radial-nav" aria-label="主导航">
+      <button id="menu-toggle" class="menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="radial-links"><span></span><span></span></button>
+      <div id="radial-links" class="radial-links" inert>
+        {nav.map((item, i) => <a href={item.href} style={`--item:${i}`} class="radial-item" tabindex="-1"><svg><use href={`#i-${item.icon}`}/></svg><span>{item.name}</span></a>)}
+      </div>
+    </nav>
+    <header class="site-header"><a href="#home" class="wordmark">{site.name}<span class="wordmark-dot">.</span></a><div class="header-right"><a href="#projects">项目</a><a href="#learning">学习手记</a><span class="preview-label"><span></span>首页预览</span></div></header>
+    <main>
+      <section class="hero" id="home" aria-label="首页封面">
+        <img class="cover-image" src={site.cover} alt="绘梨衣坐在花田中，面向金粉色天空与远处的落日" width="1915" height="821" fetchpriority="high"/>
+        <div class="hero-shade"></div>
+        <div class="hero-message"><p class="eyebrow">A LITTLE WORLD OF MY OWN</p><h1 aria-label={site.welcome}><span class="sr-only">{site.welcome}</span><span id="typewriter" aria-hidden="true" data-text={site.welcome}>{site.welcome}</span><span class="cursor" aria-hidden="true"></span></h1><p class="hero-subtitle">收藏热爱，记录每一次生长。</p></div>
+        <a class="scroll-cue" href="#projects" aria-label="向下探索项目"><span>向下，看看我的世界</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></a>
+        <div class="hero-bottom"><span>PROJECTS, NOTES & LITTLE WONDERS</span><span>保持好奇 · 慢慢生长</span></div>
+      </section>
+      <div class="content-world" style={site.background ? `--world-image: url('${site.background}')` : undefined} data-background={site.background ? 'image' : 'placeholder'}>
+        <div class="content-inner">
+          <div class="intro-strip"><p>在这里，把想法变成作品，把学习留成足迹。</p><span class="intro-mark" aria-hidden="true">✳</span></div>
+          <section id="projects" class="projects-section section-anchor" aria-labelledby="projects-heading">
+            <div class="section-heading"><div><span class="eyebrow">01 / THINGS I MAKE</span><h2 id="projects-heading">把想法，变成作品<span>。</span></h2></div><p>一些尝试，一点热爱。<br/>每个项目，都是一次新的出发。</p></div>
+            <p class="demo-note">以下为示例内容，等待填入你的真实项目与学习记录。</p>
+            <div class="project-grid">{projects.map(({data, Content}, i) => <details class="project-card glass-card"><summary><div class="project-top"><span class="project-number">0{i+1}</span><span class={`status ${data.status === '进行中' ? 'active' : ''}`}><i></i>{data.status}</span></div><div class="project-illustration" aria-hidden="true">{i === 0 ? <><div class="mini-window"><span class="mini-dots">•••</span><div class="mini-sunset"></div><span class="mini-line"></span><span class="mini-line short"></span></div><span class="orbit-label">HELLO, WORLD.</span></> : <><div class="idea-orbit"></div><span class="idea-star">✳</span><span class="orbit-label">SOMETHING GOOD IS GROWING.</span></>}</div><div class="project-title-row"><h3>{data.title}</h3><span class="round-arrow"><svg><use href="#i-arrow"/></svg></span></div><p class="card-description">{data.description}</p><div class="card-bottom"><div class="tags">{data.tags.map(tag=><span>{tag}</span>)}</div><span class="example-label">{data.demo && '示例'}<span class="detail-hint"> · 展开手记</span></span></div></summary><div class="markdown-content"><Content/>{data.link && <a href={data.link} target="_blank" rel="noopener noreferrer">查看项目 ↗</a>}</div></details>)}</div>
+          </section>
+          <section id="learning" class="learning-section section-anchor" aria-labelledby="learning-heading">
+            <div class="section-heading"><div><span class="eyebrow">02 / NOTES ALONG THE WAY</span><h2 id="learning-heading">每天，多理解一点<span>。</span></h2></div><p>不用着急抵达。<br/>走过的每一步，都算数。</p></div>
+            <div class="learning-toolbar"><span class="small-label">我的学习手记</span><div class="filters" role="group" aria-label="筛选学习状态"><button class="selected" data-filter="全部" aria-pressed="true">全部</button><button data-filter="学习中" aria-pressed="false">学习中</button><button data-filter="已完成" aria-pressed="false">已完成</button></div></div>
+            <div class="learning-list">{learning.map(({data, Content}, i) => <details class="learning-card glass-card" data-status={data.status}><summary><div class="learning-index">0{i+1}</div><div class="learning-info"><div class="learning-meta"><span>{data.topic}</span><span>{data.demo && '示例记录'}</span><time datetime={data.updated}>{data.updated.replaceAll('-','.')}</time></div><h3>{data.title}</h3><p>{data.description}</p></div><span class={`status ${data.status === '学习中' ? 'active' : ''}`}><i></i>{data.status}</span><span class="learning-plus" aria-hidden="true">+</span></summary><div class="markdown-content"><Content/></div></details>)}</div>
+            <p id="learning-empty" class="empty-message" hidden>这个分类还没有手记，新的探索即将开始。</p>
+          </section>
+          <SkillTree/>
+          <footer><a href="#home" class="footer-brand">{site.name}<span>．</span></a><p>愿每一份好奇，都有回响。</p><a href="#home" class="back-top">回到起点 <span>↑</span></a><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span><span>BUILT WITH CURIOSITY & ASTRO</span></div></footer>
+        </div>
+      </div>
+    </main>
+    <script src="../scripts/interactions.ts"></script>
+  </body>
+</html>
