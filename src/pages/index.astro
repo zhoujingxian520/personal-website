@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { site } from '../site.config';
 import SkillTree from '../components/SkillTree.astro';
+import WritingLibrary from '../components/WritingLibrary.astro';
 import '../styles/global.css';
 const projectEntries = (await getCollection('projects')).sort((a,b) => a.data.order-b.data.order);
 const learningEntries = (await getCollection('learning')).sort((a,b) => a.data.order-b.data.order);
@@ -55,10 +56,12 @@ const nav = [{href:'#home',name:'首页',icon:'home'},{href:'#projects',name:'�
           </section>
           <section id="learning" class="learning-section section-anchor" aria-labelledby="learning-heading">
             <div class="section-heading"><div><span class="eyebrow">02 / NOTES ALONG THE WAY</span><h2 id="learning-heading">每天，多理解一点<span>。</span></h2></div><p>不用着急抵达。<br/>走过的每一步，都算数。</p></div>
+            <a class="writing-entry glass-card" href="#writing-library"><div><strong>六级写作知识库</strong><p>从句型讲解走进作文语境，再准确回到每一次用法。</p></div><span aria-hidden="true">↗</span></a>
             <div class="learning-toolbar"><span class="small-label">我的学习手记</span><div class="filters" role="group" aria-label="筛选学习状态"><button class="selected" data-filter="全部" aria-pressed="true">全部</button><button data-filter="学习中" aria-pressed="false">学习中</button><button data-filter="已完成" aria-pressed="false">已完成</button></div></div>
             <div class="learning-list">{learning.map(({data, Content}, i) => <details class="learning-card glass-card" data-status={data.status}><summary><div class="learning-index">0{i+1}</div><div class="learning-info"><div class="learning-meta"><span>{data.topic}</span><span>{data.demo && '示例记录'}</span><time datetime={data.updated}>{data.updated.replaceAll('-','.')}</time></div><h3>{data.title}</h3><p>{data.description}</p></div><span class={`status ${data.status === '学习中' ? 'active' : ''}`}><i></i>{data.status}</span><span class="learning-plus" aria-hidden="true">+</span></summary><div class="markdown-content"><Content/></div></details>)}</div>
             <p id="learning-empty" class="empty-message" hidden={learning.length > 0}>这个分类还没有手记，新的探索即将开始。</p>
           </section>
+          <WritingLibrary/>
           <SkillTree/>
           <footer><a href="#home" class="footer-brand">{site.name}<span>．</span></a><p>愿每一份好奇，都有回响。</p><a href="#home" class="back-top">回到起点 <span>↑</span></a><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span><span>BUILT WITH CURIOSITY & ASTRO</span></div></footer>
         </div>

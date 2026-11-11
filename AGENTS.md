@@ -13,3 +13,7 @@
 7. 返回内容摘要、Git 同步结果及 outputs/首页预览.html 的本地链接。推送失败保留本地成果并说明。提醒用户刷新或重新打开离线文件。
 
 未收到真实笔记时保留示例标记。首页封面欢迎语保持“欢迎来到我的世界”，站名通过 src/site.config.ts 统一配置。手机顶部重复导航可隐藏，扇形菜单始终可用。
+
+## 六级写作模块
+
+新增作文或句型时遵守 docs/六级写作知识库.md 的标记和 ID 登记规则，更新 src/content/essays、src/content/patterns 及 data/writing-ids.json。关联示例由构建自动生成，不手写反向索引。不要重编号旧 ID；删除须登记 retired 与 reason。真实材料收到前保持 demo 标记，不能自动认定用户已掌握。更新后执行 update:notes，并检查双向定位。

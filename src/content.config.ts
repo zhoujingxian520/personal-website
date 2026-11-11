@@ -16,4 +16,10 @@ const learning = defineCollection({
   loader: glob({ base: './src/content/learning', pattern: '**/*.md' }),
   schema: z.object({ ...base, topic: z.string(), updated: z.string(), status: z.enum(['计划中', '学习中', '已完成']) }),
 });
-export const collections = { projects, learning };
+const writingSchema = z.object({
+  stableId: z.string(), title: z.string(), description: z.string(),
+  order: z.number().default(0), demo: z.boolean(),
+});
+const essays = defineCollection({ loader: glob({ base: './src/content/essays', pattern: '**/*.md' }), schema: writingSchema });
+const patterns = defineCollection({ loader: glob({ base: './src/content/patterns', pattern: '**/*.md' }), schema: writingSchema });
+export const collections = { projects, learning, essays, patterns };

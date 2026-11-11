@@ -1,0 +1,10 @@
+{
+  "essay-demo-learning": { "kind": "essay", "owner": "essay-demo-learning", "state": "active" },
+  "pattern-demo-background": { "kind": "pattern", "owner": "pattern-demo-background", "state": "active" },
+  "pattern-demo-not-only": { "kind": "pattern", "owner": "pattern-demo-not-only", "state": "active" },
+  "pattern-demo-conclusion": { "kind": "pattern", "owner": "pattern-demo-conclusion", "state": "active" },
+  "occ-demo-learning-001": { "kind": "occ", "owner": "essay-demo-learning", "state": "active" },
+  "occ-demo-learning-002": { "kind": "occ", "owner": "essay-demo-learning", "state": "active" },
+  "occ-demo-learning-003": { "kind": "occ", "owner": "essay-demo-learning", "state": "active" },
+  "occ-demo-learning-004": { "kind": "occ", "owner": "essay-demo-learning", "state": "active" }
+}

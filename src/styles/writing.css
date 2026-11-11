@@ -1,0 +1,44 @@
+.writing-library{padding-top:80px;padding-bottom:20px}
+.writing-library .writing-intro{font-size:13px;color:#62554c;line-height:1.9;max-width:650px}
+.writing-library #writing-navigation-status{color:#8a492c;font-size:13px;line-height:1.8}
+.writing-library #writing-navigation-status:empty{margin:0}
+.writing-library .writing-layout{display:grid;grid-template-columns:220px minmax(0,1fr);gap:28px;margin-top:28px;align-items:start}
+.writing-library .writing-catalog{padding:26px 22px;position:sticky;top:110px;background:rgba(255,251,246,.94)!important}
+.writing-library .writing-catalog h3{font-family:var(--serif);font-weight:400;font-size:23px;margin:16px 0 26px}
+.writing-library .writing-small{display:block;font-size:10px;letter-spacing:.08em;color:#79634e;line-height:1.8}
+.writing-library .writing-catalog ul{padding:0;list-style:none;margin:8px 0 26px}
+.writing-library a{color:#795039;text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}
+.writing-library .writing-catalog a{display:block;padding:10px 0;font-size:12px;line-height:1.7}
+.writing-library .writing-group-heading{font-size:12px;letter-spacing:.08em;color:#695544;font-weight:500;margin:0 0 18px}
+.writing-library .writing-group-heading:not(:first-child){margin-top:38px}
+.writing-library .writing-essay,.writing-library .writing-pattern,.writing-library .writing-retired{background:rgba(255,251,246,.94)!important;margin-bottom:20px;scroll-margin-top:110px}
+.writing-library .writing-essay>summary{padding:26px 28px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.writing-library .writing-essay>summary strong{display:block;font-family:var(--serif);font-size:23px;font-weight:400;margin:10px 0}
+.writing-library .writing-essay>summary span>span:last-child{font-size:12px;line-height:1.8;color:#75685e}
+.writing-library .writing-fold-icon{font-size:26px;color:#94765c;transition:transform .2s}
+.writing-library .writing-essay[open] .writing-fold-icon{transform:rotate(45deg)}
+.writing-library .writing-essay>.writing-prose{padding:0 28px 26px;border-top:1px solid var(--line)}
+.writing-library .writing-prose{font-size:14px;line-height:2;color:#4f463f;overflow-wrap:anywhere}
+.writing-library .writing-prose h3{font-size:13px;color:#80664f;margin-top:26px;font-weight:500}
+.writing-library .writing-prose p{margin:18px 0}
+.writing-library .writing-prose details{border:1px solid #d8c7b8;border-radius:6px;padding:12px 16px;margin:24px 0;background:#f6eee4}
+.writing-library .writing-prose summary{font-size:12px;color:#73573e;list-style:revert;line-height:1.8}
+.writing-library .writing-prose a[data-pattern-id]{color:#81512d;text-decoration-style:dotted;box-decoration-break:clone;-webkit-box-decoration-break:clone;scroll-margin-top:120px}
+.writing-library .writing-pattern,.writing-library .writing-retired{padding:28px}
+.writing-library .writing-pattern h4{font-family:var(--serif);font-size:23px;font-weight:400;margin:12px 0}
+.writing-library .writing-formula{font-family:Georgia,var(--serif);font-size:17px;line-height:1.8;color:#845d3e;border-left:2px solid #c7a17b;padding-left:15px}
+.writing-library .writing-examples{border-top:1px solid var(--line);margin-top:24px;padding-top:16px}
+.writing-library .writing-examples h5{font-size:12px;font-weight:500;margin:0 0 12px;color:#6b5643}
+.writing-library .writing-examples ul{padding:0;list-style:none;margin:0}
+.writing-library .writing-examples li+li{margin-top:10px}
+.writing-library .writing-examples a{display:block;padding:14px 16px;background:#f2e9dc;border:1px solid #e1d2bf;border-radius:5px;font-size:12px;line-height:1.8;text-decoration:none}
+.writing-library .writing-examples a:hover{border-color:#a58564;background:#eee0cd}
+.writing-library .writing-examples q{display:block;color:#635749;font-size:13px;margin-top:7px}
+.writing-library :target{outline:2px solid #986632;outline-offset:3px}
+.writing-library a[data-pattern-id]:target{background:#ffe8a5;color:#3c2c1d;border-radius:2px}
+.writing-entry{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 26px;margin:26px 0;color:#62472f}
+.writing-entry strong{display:block;font-size:16px;font-weight:500;margin-bottom:8px}
+.writing-entry p{font-size:12px;color:#736455;margin:0;line-height:1.8}
+.writing-entry>span{font-size:22px}
+@media(max-width:760px){.writing-library{padding-top:58px}.writing-library .writing-layout{grid-template-columns:minmax(0,1fr);gap:24px}.writing-library .writing-catalog{position:static;padding:22px}.writing-library .writing-catalog ul{display:flex;flex-wrap:wrap;gap:5px 18px;margin-bottom:16px}.writing-library .writing-catalog h3{margin:12px 0 18px}.writing-library .writing-essay>summary,.writing-library .writing-pattern,.writing-library .writing-retired{padding:22px 18px}.writing-library .writing-essay>.writing-prose{padding:0 18px 22px}.writing-entry{padding:22px 20px}.writing-entry p{font-size:11px}}
+@media(forced-colors:active){.writing-library :target{outline:2px solid Highlight}}
