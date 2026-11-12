@@ -1,4 +1,5 @@
 ---
+categoryId: category-demo-conclusion
 stableId: pattern-demo-conclusion
 title: 总结观点
 description: In conclusion, ... plays an important role in ...

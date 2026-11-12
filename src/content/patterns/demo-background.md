@@ -1,4 +1,5 @@
 ---
+categoryId: category-demo-background
 stableId: pattern-demo-background
 title: 用背景引出话题
 description: Against the backdrop of + 名词短语

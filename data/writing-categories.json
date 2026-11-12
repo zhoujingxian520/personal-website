@@ -1,0 +1,75 @@
+{
+  "palette": [
+    {
+      "id": "mark-01",
+      "color": "#C99B55"
+    },
+    {
+      "id": "mark-02",
+      "color": "#C78680"
+    },
+    {
+      "id": "mark-03",
+      "color": "#83A58B"
+    },
+    {
+      "id": "mark-04",
+      "color": "#7F9FB6"
+    },
+    {
+      "id": "mark-05",
+      "color": "#AC94B3"
+    },
+    {
+      "id": "mark-06",
+      "color": "#A7A15D"
+    },
+    {
+      "id": "mark-07",
+      "color": "#B57B5B"
+    },
+    {
+      "id": "mark-08",
+      "color": "#5C9BA2"
+    },
+    {
+      "id": "mark-09",
+      "color": "#8876BD"
+    },
+    {
+      "id": "mark-10",
+      "color": "#718F65"
+    }
+  ],
+  "categories": [
+    {
+      "id": "category-demo-background",
+      "label": "背景引入（演示）",
+      "shortLabel": "背景",
+      "scope": "demo",
+      "order": 1,
+      "state": "active"
+    },
+    {
+      "id": "category-demo-parallel",
+      "label": "并列递进（演示）",
+      "shortLabel": "递进",
+      "scope": "demo",
+      "order": 2,
+      "state": "active"
+    },
+    {
+      "id": "category-demo-conclusion",
+      "label": "总结收束（演示）",
+      "shortLabel": "总结",
+      "scope": "demo",
+      "order": 3,
+      "state": "active"
+    }
+  ],
+  "assignments": {
+    "category-demo-background": "mark-01",
+    "category-demo-conclusion": "mark-02",
+    "category-demo-parallel": "mark-03"
+  }
+}

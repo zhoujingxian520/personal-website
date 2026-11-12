@@ -1,4 +1,5 @@
 ---
+categoryId: category-demo-parallel
 stableId: pattern-demo-not-only
 title: 连接两个并列作用
 description: not only ... but also ...

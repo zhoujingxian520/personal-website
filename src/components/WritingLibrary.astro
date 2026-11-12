@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import { createWritingIndex } from '../../scripts/writing-model.mjs';
+import { readCategories,patternCategories } from '../../scripts/category-data.mjs';
 import registry from '../../data/writing-ids.json';
 import '../styles/writing.css';
 const essays = (await getCollection('essays')).sort((a,b) => a.data.order-b.data.order);
@@ -8,6 +9,10 @@ const patterns = (await getCollection('patterns')).sort((a,b) => a.data.order-b.
 const occurrences = createWritingIndex(essays, patterns, registry);
 const renderedEssays = await Promise.all(essays.map(async e => ({...e,...await render(e)})));
 const renderedPatterns = await Promise.all(patterns.map(async e => ({...e,...await render(e)})));
+const categoryData=readCategories();
+const categoryMap=patternCategories(categoryData);
+const categories=[...new Map([...categoryMap.values()].map(c=>[c.id,c])).values()].sort((a,b)=>a.order-b.order||a.id.localeCompare(b.id));
+const categoryStyle=id=>`--mark-color:${categoryMap.get(id).color}`;
 const retired = Object.entries(registry).filter(([,r]) => r.state === 'retired');
 ---
 <section id="writing-library" class="writing-library section-anchor" aria-labelledby="writing-heading">
@@ -16,19 +21,27 @@ const retired = Object.entries(registry).filter(([,r]) => r.state === 'retired')
   <p id="writing-navigation-status" role="status" aria-live="polite"></p>
   <noscript><p>自动定位未启用。请手动展开作文，再使用句型示例链接；全文仍可阅读。</p></noscript>
   <div class="writing-layout">
-    <nav class="writing-catalog glass-card" aria-label="作文与句型目录">
+    <aside class="writing-aid glass-card"><details id="writing-aid-panel"><summary class="writing-aid-toggle">目录与句型分类</summary>
+      <section class="writing-legend" aria-label="句型分类说明"><h3>句型分类说明</h3><p>横线标记类别，点击英文查看讲解。</p><ul>{categories.map(c=><li style={`--mark-color:${c.color}`}><span class="legend-swatch" aria-hidden="true"></span><span>{c.label}{c.pending&&' · 待配色'}</span></li>)}</ul></section>
+      <details class="writing-directory"><summary>作文与句型目录</summary><nav class="writing-catalog" aria-label="作文与句型目录">
       <span class="eyebrow">READ & CONNECT</span><h3>从这里开始</h3>
       <p class="writing-small">作文目录</p><ul>{essays.map(e => <li><a href={`#${e.data.stableId}`}>{e.data.title}{e.data.demo && ' · 演示'}</a></li>)}</ul>
       <p class="writing-small">句型索引</p><ul>{patterns.map(e => <li><a href={`#${e.data.stableId}`}>{e.data.title}</a></li>)}</ul>
       {essays.length === 0 && <p>作文尚待整理。</p>}
-    </nav>
+    </nav></details></details></aside>
     <div class="writing-reading">
       <h3 class="writing-group-heading">作文 · 在语境中理解</h3>
       {renderedEssays.map(({data,Content}) => <details id={data.stableId} class="writing-essay glass-card" tabindex="-1"><summary><span><span class="writing-small">ESSAY {data.demo && ' / 技术演示'}</span><strong>{data.title}</strong><span>{data.description}</span></span><span class="writing-fold-icon" aria-hidden="true">+</span></summary><div class="writing-prose"><Content/></div></details>)}
       <h3 class="writing-group-heading">句型 · 看见不同用法</h3>
-      {renderedPatterns.map(({data,Content}) => <section id={data.stableId} class="writing-pattern glass-card" tabindex="-1" aria-labelledby={`${data.stableId}-heading`}><span class="writing-small">PATTERN {data.demo && ' / 技术演示'}</span><h4 id={`${data.stableId}-heading`}>{data.title}</h4><p class="writing-formula">{data.description}</p><div class="writing-prose"><Content/></div><div class="writing-examples"><h5>回到作文中的具体用法</h5><ul>{occurrences.filter(o => o.patternId === data.stableId).map(o => <li><a href={`#${o.id}`} data-writing-return={data.stableId}><span>{o.essayTitle} · {o.location}</span><q lang="en">{o.excerpt}</q></a></li>)}</ul>{!occurrences.some(o => o.patternId === data.stableId) && <p>尚未收录应用示例。</p>}</div></section>)}
+      {renderedPatterns.map(({data,Content}) => <section id={data.stableId} class="writing-pattern glass-card" style={categoryStyle(data.stableId)} tabindex="-1" aria-labelledby={`${data.stableId}-heading`}><span class="writing-small">PATTERN {data.demo && ' / 技术演示'}</span><p class="writing-category-label">{categoryMap.get(data.stableId).label}{categoryMap.get(data.stableId).pending&&' · 待配色'}</p><h4 id={`${data.stableId}-heading`}>{data.title}</h4><p class="writing-formula">{data.description}</p><div class="writing-prose"><Content/></div><div class="writing-examples"><h5>回到作文中的具体用法</h5><ul>{occurrences.filter(o => o.patternId === data.stableId).map(o => <li><a href={`#${o.id}`} data-writing-return={data.stableId}><span>{o.essayTitle} · {o.location}</span><span class="writing-category-label">{categoryMap.get(data.stableId).label}</span><q lang="en">{o.excerpt}</q></a></li>)}</ul>{!occurrences.some(o => o.patternId === data.stableId) && <p>尚未收录应用示例。</p>}</div></section>)}
       {retired.map(([id,r]) => <section id={id} class="writing-retired glass-card" tabindex="-1"><h4>该示例已调整</h4><p>{r.reason}</p><a href="#writing-library">返回知识库目录</a></section>)}
     </div>
   </div>
 </section>
 <script src="../scripts/writing-navigation.ts"></script>
+
+<script>
+const panel=document.getElementById('writing-aid-panel') as HTMLDetailsElement;
+const wide=matchMedia('(min-width:1101px)');
+if(panel){panel.open=wide.matches;wide.addEventListener('change',()=>{panel.open=wide.matches;});}
+</script>

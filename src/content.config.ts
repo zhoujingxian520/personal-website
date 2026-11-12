@@ -21,5 +21,5 @@ const writingSchema = z.object({
   order: z.number().default(0), demo: z.boolean(),
 });
 const essays = defineCollection({ loader: glob({ base: './src/content/essays', pattern: '**/*.md' }), schema: writingSchema });
-const patterns = defineCollection({ loader: glob({ base: './src/content/patterns', pattern: '**/*.md' }), schema: writingSchema });
+const patterns = defineCollection({ loader: glob({ base: './src/content/patterns', pattern: '**/*.md' }), schema: writingSchema.extend({ categoryId: z.string().min(1) }) });
 export const collections = { projects, learning, essays, patterns };
