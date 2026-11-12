@@ -94,3 +94,7 @@ npm.cmd run export-preview
 首页学习区域已增加知识库入口，支持句型与作文具体片段之间双向定位、自动展开和高亮。详见 [内容维护与验证记录](docs/六级写作知识库.md)。模板为 `docs/templates/作文模板.md` 和 `docs/templates/句型模板.md`；普通学习记录保持原流程。
 
 `npm.cmd run update:notes` 现在也会检查知识库，静态构建时自动校验最终页面及稳定 ID。示例为自编演示，不代表真题或掌握程度。
+
+## 当前版本：多页面摘要站点
+
+以上早期单页说明以本节为准。运行 `npm.cmd run update:notes` 后双击 `outputs/网站预览/index.html`。原 `outputs/首页预览.html` 作为跳转入口保留，完整内容已拆到分类和详情页。需携带整个 网站预览 文件夹。维护与验收见 [多页面维护说明](docs/多页面维护说明.md)。

@@ -1,0 +1,7 @@
+---
+import Base from '../../layouts/Base.astro';
+import SummaryCard from '../../components/SummaryCard.astro';
+import {getCollection} from 'astro:content';
+const entries=(await getCollection('learning')).sort((a,b)=>b.data.updated.localeCompare(a.data.updated)||a.data.order-b.data.order||a.id.localeCompare(b.id));
+---
+<Base title="学习记录"><h1>学习记录</h1><p class="page-intro">把走过的学习过程，慢慢留成足迹。</p><a class="brief-entry glass-card" href="/learning/cet6/">六级写作知识库 →</a><div class="filters" role="group" aria-label="筛选学习状态">{['全部','学习中','已完成'].map((s,i)=><button data-filter={s} class:list={{selected:i===0}} aria-pressed={i===0}>{s}</button>)}</div>{entries.map(entry=><SummaryCard entry={entry} kind="learning"/>)}<p id="learning-empty" class="empty-message" hidden={entries.length>0}>暂无对应记录。</p><script src="../../scripts/filter.ts"/></Base>

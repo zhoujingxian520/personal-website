@@ -1,0 +1,7 @@
+---
+import Base from '../../layouts/Base.astro';
+import {getCollection,render} from 'astro:content';
+export async function getStaticPaths(){return (await getCollection('projects')).map(entry=>({params:{id:entry.id},props:{entry}}));}
+const {entry}=Astro.props;const {Content}=await render(entry);
+---
+<Base title={entry.data.title}><a href="/projects/">← 返回项目</a><article class="detail-page glass-card"><h1>{entry.data.title}</h1><div class="summary-meta"><span>{entry.data.status}</span>{entry.data.demo&&<span>示例内容</span>}{entry.data.updated&&<time>{entry.data.updated}</time>}</div><div class="markdown-content"><Content/></div>{entry.data.link&&<a href={entry.data.link} target="_blank" rel="noopener noreferrer">查看项目 ↗</a>}</article></Base>

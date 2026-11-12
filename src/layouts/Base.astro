@@ -1,0 +1,35 @@
+---
+import {site} from '../site.config';
+import '../styles/global.css';
+import '../styles/pages.css';
+const {title='项目与学习手记',home=false}=Astro.props;
+const nav=[{href:'/',name:'首页',icon:'home'},{href:'/projects/',name:'项目',icon:'grid'},{href:'/learning/',name:'学习',icon:'book'},...(site.skillTree.enabled?[{href:'/skill-tree/',name:'技能树',icon:'tree'}]:[])];
+---
+<!doctype html><html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="一个收藏项目、记录学习与灵感的个人空间。"/>
+    <meta name="theme-color" content="#f2ede7"/><title>{title} · {site.name}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
+    <link rel="preload" as="image" href={site.cover}/>
+  </head>
+<body>    <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h5v-7h4v7h5V9"/></symbol>
+      <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></symbol>
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1v14"/></symbol>
+      <symbol id="i-tree" viewBox="0 0 24 24"><path d="M12 20V9M5 5v4l7 4 7-4V5"/><circle cx="5" cy="4" r="2"/><circle cx="19" cy="4" r="2"/><circle cx="12" cy="7" r="2"/><circle cx="12" cy="20" r="2"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    </defs></svg>
+    <a class="skip-link" href="#main-content">跳到主要内容</a>
+    <button class="menu-scrim" id="menu-scrim" aria-label="关闭导航" hidden tabindex="-1"></button>
+    <nav class="radial-nav" aria-label="主导航">
+      <button id="menu-toggle" class="menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="radial-links"><span></span><span></span></button>
+      <div id="radial-links" class="radial-links" inert>
+        {nav.map((item, i) => <a href={item.href} style={`--item:${i}`} class="radial-item" tabindex="-1"><svg><use href={`#i-${item.icon}`}/></svg><span>{item.name}</span></a>)}
+      </div>
+    </nav>
+    <header class="site-header"><a href="/" class="wordmark">{site.name}<span class="wordmark-dot">.</span></a><div class="header-right"><a href="/projects/">项目</a><a href="/learning/">学习手记</a></div></header>
+
+<main id="main-content"><slot name="hero"/><div class="content-world" style={site.background?`--world-image: url('${site.background}')`:undefined} data-background={site.background?'image':'placeholder'}>{site.background&&<div class="world-backdrop" aria-hidden="true"/>}<div class:list={['content-inner',!home&&'subpage']}><slot/><footer><a href="/" class="footer-brand">{site.name}</a><p>愿每一份好奇，都有回响。</p><a href="/" class="back-top">返回首页 ↑</a><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span></div></footer></div></div></main>
+<script src="../scripts/navigation.ts"/>
+</body></html>

@@ -4,7 +4,7 @@ import { validateRegistryHistory, validateWritingHTML } from './writing-model.mj
 
 export async function validateWritingBuild(directory) {
   const registry = JSON.parse(await readFile(new URL('../data/writing-ids.json', import.meta.url), 'utf8'));
-  validateWritingHTML(await readFile(new URL('index.html', directory), 'utf8'), registry);
+  validateWritingHTML(await readFile(new URL('learning/cet6/index.html', directory), 'utf8'), registry);
   // Keep deleted IDs in the tracked ledger, even when retired.
   const previous = spawnSync('git', ['show', 'HEAD:data/writing-ids.json'], { encoding: 'utf8', cwd: new URL('../', import.meta.url) });
   if (previous.status === 0) {

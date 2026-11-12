@@ -4,7 +4,7 @@ import vm from 'node:vm';
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-const source = stripTypeScriptTypes(await readFile(new URL('../src/scripts/interactions.ts', import.meta.url), 'utf8'));
+const source = stripTypeScriptTypes(await readFile(new URL('../src/scripts/home.ts', import.meta.url), 'utf8'));
 
 // Exercise the production script with a deterministic clock and browser events.
 // This checks timing and lifecycle behavior; visual/browser checks remain separate.
@@ -33,7 +33,7 @@ function setup({ reduced = false, hidden = false } = {}) {
     addEventListener: (name, callback) => motionEvents.set(name, callback),
   };
   vm.runInNewContext(source, {
-    document, matchMedia: () => motion,
+    document, matchMedia: () => motion, window: { addEventListener() {} }, location: { hash: '' },
     IntersectionObserver: class { observe() {} },
     setTimeout(callback, delay) { const id = ++nextId; timers.set(id, { callback, at: now + delay }); return id; },
     clearTimeout(id) { timers.delete(id); },

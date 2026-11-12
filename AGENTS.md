@@ -17,3 +17,9 @@
 ## 六级写作模块
 
 新增作文或句型时遵守 docs/六级写作知识库.md 的标记和 ID 登记规则，更新 src/content/essays、src/content/patterns 及 data/writing-ids.json。关联示例由构建自动生成，不手写反向索引。不要重编号旧 ID；删除须登记 retired 与 reason。真实材料收到前保持 demo 标记，不能自动认定用户已掌握。更新后执行 update:notes，并检查双向定位。
+
+## 多页面摘要改版（2026-11-12）
+
+首页改为项目和学习分类摘要，各最多三条；分类列表、Markdown 详情、六级知识库和技能树占位采用独立页面。站名、背景、封面和扇形菜单保留。知识库稳定 ID 与旧链接兼容继续有效。
+
+update:notes 生成完整离线目录 outputs/网站预览，入口 index.html；旧 首页预览.html 是兼容入口。交付时链接新首页并提醒携带整个目录。详细规则和验证边界见 docs/多页面维护说明.md。
