@@ -1,0 +1,354 @@
+---
+import Base from '../../layouts/Base.astro';
+import '../../styles/notebook.css';
+---
+<Base title="记事本与时间规划">
+  <section class="nb-shell" id="nb-app">
+    <div class="nb-hero">
+      <div class="nb-hero-copy">
+        <p class="eyebrow">PLANNER &amp; NOTEBOOK</p>
+        <h1>记事本与时间规划</h1>
+        <p>录入固定日常、阶段安排规范与主体任务、突发小事，由纯前端约束引擎离线生成当日时间规划；支持进度联动、刷新恢复与 JSON / Markdown 备份。</p>
+      </div>
+      <div class="nb-toolbar">
+        <div class="nb-date-group">
+          <input type="date" id="nb-target-date" aria-label="规划日期" />
+          <button type="button" class="nb-btn nb-btn-subtle" id="nb-btn-today">今天</button>
+          <button type="button" class="nb-btn nb-btn-subtle" id="nb-btn-tomorrow">明天</button>
+        </div>
+        <button type="button" class="nb-btn nb-btn-primary" id="nb-btn-generate-full">生成今日规划</button>
+        <button type="button" class="nb-btn" id="nb-btn-generate-now">从此刻重排</button>
+        <button type="button" class="nb-btn" id="nb-btn-load-demo">载入示例模板</button>
+        <button type="button" class="nb-btn" id="nb-btn-open-backup">备份与导出</button>
+      </div>
+    </div>
+
+    <div class="nb-status-strip">
+      <span class="nb-save-badge" id="nb-save-badge">
+        <i class="nb-save-dot" aria-hidden="true"></i>
+        <span id="nb-save-text">正在初始化本地存储...</span>
+      </span>
+      <span class="nb-phase-pill" id="nb-phase-summary">当前阶段：未命名阶段</span>
+    </div>
+
+    <div class="nb-workspace">
+      <div class="nb-left-col">
+        <section class="glass-card nb-card" aria-labelledby="nb-quick-heading">
+          <div class="nb-card-title">
+            <h2 id="nb-quick-heading" style="margin:0;font:inherit;">突发小事速记</h2>
+            <span class="nb-tag">随时插入</span>
+          </div>
+          <form class="nb-quick-form" id="nb-quick-form">
+            <input
+              type="text"
+              class="nb-input"
+              id="nb-quick-title"
+              placeholder="例如：下楼取快递 / 回复导师邮件..."
+              required
+            />
+            <div class="nb-pill-group" id="nb-quick-duration-pills" aria-label="快捷时长">
+              <button type="button" class="nb-pill active" data-min="15">15分钟</button>
+              <button type="button" class="nb-pill" data-min="30">30分钟</button>
+              <button type="button" class="nb-pill" data-min="45">45分钟</button>
+              <button type="button" class="nb-pill" data-min="60">60分钟</button>
+            </div>
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-quick-duration">耗时(分钟)</label>
+                <input type="number" class="nb-input" id="nb-quick-duration" min="5" max="240" value="15" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-quick-urgency">紧急度</label>
+                <select class="nb-select" id="nb-quick-urgency">
+                  <option value="today_must">今天必做</option>
+                  <option value="soon" selected>近期优先</option>
+                  <option value="whenever">顺手安排</option>
+                </select>
+              </div>
+              <div class="nb-field">
+                <label for="nb-quick-period">偏好时段</label>
+                <select class="nb-select" id="nb-quick-period">
+                  <option value="any" selected>任意</option>
+                  <option value="morning">上午</option>
+                  <option value="afternoon">下午</option>
+                  <option value="evening">晚上</option>
+                </select>
+              </div>
+            </div>
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-quick-tag">场景标签</label>
+                <input type="text" class="nb-input" id="nb-quick-tag" placeholder="@出门 / @电脑" />
+              </div>
+              <div class="nb-field">
+                <label for="nb-quick-win-start">限定最早</label>
+                <input type="time" class="nb-input" id="nb-quick-win-start" />
+              </div>
+              <div class="nb-field">
+                <label for="nb-quick-win-end">限定最晚</label>
+                <input type="time" class="nb-input" id="nb-quick-win-end" />
+              </div>
+            </div>
+            <div class="nb-row">
+              <button type="submit" class="nb-btn">加入小事池</button>
+              <button type="button" class="nb-btn nb-btn-primary" id="nb-quick-add-replan">加入并立即重排</button>
+            </div>
+          </form>
+        </section>
+
+        <div class="nb-tabs" id="nb-tabs" role="tablist" aria-label="规划输入分类">
+          <button type="button" class="nb-tab-btn active" role="tab" aria-selected="true" data-tab="small">
+            突发小事 <span id="nb-count-small">(0)</span>
+          </button>
+          <button type="button" class="nb-tab-btn" role="tab" aria-selected="false" data-tab="phase">
+            阶段与主任务 <span id="nb-count-main">(0)</span>
+          </button>
+          <button type="button" class="nb-tab-btn" role="tab" aria-selected="false" data-tab="routine">
+            固定日常 <span id="nb-count-routine">(0)</span>
+          </button>
+        </div>
+
+        <section class="glass-card nb-card" id="nb-panel-small">
+          <div class="nb-card-title">
+            <h2 style="margin:0;font:inherit;">突发小事池</h2>
+            <button type="button" class="nb-btn nb-btn-subtle" id="nb-clear-done-small">清理已完成</button>
+          </div>
+          <div class="nb-list" id="nb-small-list"></div>
+        </section>
+
+        <section class="glass-card nb-card" id="nb-panel-phase" hidden>
+          <div class="nb-card-title">
+            <h2 style="margin:0;font:inherit;">这段时间的安排规范</h2>
+          </div>
+          <form class="nb-divider-form" id="nb-phase-form">
+            <div class="nb-field">
+              <label for="nb-phase-title">当前阶段主题</label>
+              <input type="text" class="nb-input" id="nb-phase-title" placeholder="例如：毕业项目冲刺期" />
+            </div>
+            <div class="nb-row">
+              <div class="nb-field">
+                <label for="nb-phase-start">开始日期</label>
+                <input type="date" class="nb-input" id="nb-phase-start" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-phase-end">结束日期</label>
+                <input type="date" class="nb-input" id="nb-phase-end" required />
+              </div>
+            </div>
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-day-start">每日开始</label>
+                <input type="time" class="nb-input" id="nb-day-start" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-day-end">每日结束</label>
+                <input type="time" class="nb-input" id="nb-day-end" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-cutoff-time">高强度截止</label>
+                <input type="time" class="nb-input" id="nb-cutoff-time" required />
+              </div>
+            </div>
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-deep-period">深度偏好</label>
+                <select class="nb-select" id="nb-deep-period">
+                  <option value="morning">上午</option>
+                  <option value="afternoon">下午</option>
+                  <option value="evening">晚上</option>
+                </select>
+              </div>
+              <div class="nb-field">
+                <label for="nb-min-block">最小整块(m)</label>
+                <input type="number" class="nb-input" id="nb-min-block" min="15" max="240" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-max-block">单块上限(m)</label>
+                <input type="number" class="nb-input" id="nb-max-block" min="15" max="480" required />
+              </div>
+            </div>
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-break-min">块间休息(m)</label>
+                <input type="number" class="nb-input" id="nb-break-min" min="0" max="60" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-daily-target">每日主任务(m)</label>
+                <input type="number" class="nb-input" id="nb-daily-target" min="30" max="720" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-errand-reserve">杂务预留(m)</label>
+                <input type="number" class="nb-input" id="nb-errand-reserve" min="0" max="180" required />
+              </div>
+            </div>
+            <label class="nb-check-label">
+              <input type="checkbox" id="nb-batch-small" />
+              <span>同场景标签小事自动合并批处理</span>
+            </label>
+            <div class="nb-field">
+              <label for="nb-phase-note">阶段原则与备注</label>
+              <textarea class="nb-textarea" id="nb-phase-note" placeholder="写下这段时间的节奏约束，如：上午优先推进核心文档，晚上不安排重脑力任务"></textarea>
+            </div>
+            <button type="submit" class="nb-btn nb-btn-primary">保存阶段规范</button>
+          </form>
+
+          <div class="nb-card-title" style="margin-top:16px;">
+            <h3 style="margin:0;font:inherit;">阶段主体任务</h3>
+          </div>
+          <form class="nb-divider-form" id="nb-main-form">
+            <input type="text" class="nb-input" id="nb-main-title" placeholder="新增主体任务，如：完成系统核心模块开发" required />
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-main-priority">优先级</label>
+                <select class="nb-select" id="nb-main-priority">
+                  <option value="P0">P0 最高</option>
+                  <option value="P1" selected>P1 重要</option>
+                  <option value="P2">P2 常规</option>
+                </select>
+              </div>
+              <div class="nb-field">
+                <label for="nb-main-total">总预计(m)</label>
+                <input type="number" class="nb-input" id="nb-main-total" min="30" max="10000" value="240" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-main-quota">每日上限(m)</label>
+                <input type="number" class="nb-input" id="nb-main-quota" min="15" max="720" value="120" />
+              </div>
+            </div>
+            <div class="nb-row">
+              <div class="nb-field">
+                <label for="nb-main-period">偏好时段</label>
+                <select class="nb-select" id="nb-main-period">
+                  <option value="morning" selected>上午</option>
+                  <option value="afternoon">下午</option>
+                  <option value="evening">晚上</option>
+                  <option value="any">任意</option>
+                </select>
+              </div>
+              <div class="nb-field">
+                <label for="nb-main-deadline">截止日期(可选)</label>
+                <input type="date" class="nb-input" id="nb-main-deadline" />
+              </div>
+            </div>
+            <button type="submit" class="nb-btn">添加主体任务</button>
+          </form>
+          <div class="nb-list" id="nb-main-list"></div>
+        </section>
+
+        <section class="glass-card nb-card" id="nb-panel-routine" hidden>
+          <div class="nb-card-title">
+            <h2 style="margin:0;font:inherit;">固定日常底座</h2>
+          </div>
+          <form class="nb-divider-form" id="nb-routine-form">
+            <input type="text" class="nb-input" id="nb-routine-title" placeholder="例如：午饭与午休 / 专业课 / 锻炼" required />
+            <div class="nb-row-3">
+              <div class="nb-field">
+                <label for="nb-routine-cat">分类</label>
+                <select class="nb-select" id="nb-routine-cat">
+                  <option value="meal">饮食</option>
+                  <option value="sleep">作息</option>
+                  <option value="study" selected>学习</option>
+                  <option value="work">工作</option>
+                  <option value="exercise">运动</option>
+                  <option value="commute">通勤</option>
+                  <option value="other">其他</option>
+                </select>
+              </div>
+              <div class="nb-field">
+                <label for="nb-routine-start">开始</label>
+                <input type="time" class="nb-input" id="nb-routine-start" value="12:00" required />
+              </div>
+              <div class="nb-field">
+                <label for="nb-routine-end">结束</label>
+                <input type="time" class="nb-input" id="nb-routine-end" value="13:30" required />
+              </div>
+            </div>
+            <div class="nb-field">
+              <label for="nb-routine-pattern">重复规律</label>
+              <select class="nb-select" id="nb-routine-pattern">
+                <option value="everyday" selected>每天</option>
+                <option value="weekdays">工作日（周一至周五）</option>
+                <option value="weekends">周末（周六、周日）</option>
+                <option value="custom">自定义星期</option>
+              </select>
+            </div>
+            <div class="nb-days-picker" id="nb-routine-custom-days" hidden>
+              <label><input type="checkbox" value="1" />周一</label>
+              <label><input type="checkbox" value="2" />周二</label>
+              <label><input type="checkbox" value="3" />周三</label>
+              <label><input type="checkbox" value="4" />周四</label>
+              <label><input type="checkbox" value="5" />周五</label>
+              <label><input type="checkbox" value="6" />周六</label>
+              <label><input type="checkbox" value="0" />周日</label>
+            </div>
+            <button type="submit" class="nb-btn">添加固定日常</button>
+          </form>
+          <div class="nb-list" id="nb-routine-list"></div>
+        </section>
+      </div>
+
+      <section class="glass-card nb-timeline-panel" aria-labelledby="nb-timeline-heading">
+        <div class="nb-card-title">
+          <h2 id="nb-timeline-heading" style="margin:0;font:inherit;">当日时间规划表</h2>
+          <span class="nb-tag" id="nb-plan-meta">尚未生成</span>
+        </div>
+        <div class="nb-stats-grid" id="nb-stats-bar"></div>
+        <div class="nb-warnings" id="nb-warnings"></div>
+        <div class="nb-timeline-list" id="nb-timeline-list"></div>
+        <div class="nb-unscheduled" id="nb-unscheduled" hidden></div>
+      </section>
+    </div>
+  </section>
+
+  <dialog class="nb-dialog" id="nb-backup-dialog" aria-labelledby="nb-dialog-title">
+    <div class="nb-dialog-head">
+      <h2 id="nb-dialog-title">数据备份、导出与导入恢复</h2>
+      <button type="button" class="nb-btn nb-btn-subtle" id="nb-backup-close">关闭</button>
+    </div>
+
+    <div class="nb-dialog-section">
+      <h3>导出本地数据与规划表</h3>
+      <div class="nb-toolbar">
+        <button type="button" class="nb-btn nb-btn-primary" id="nb-export-json-dl">下载 JSON 备份</button>
+        <button type="button" class="nb-btn" id="nb-export-json-copy">复制 JSON</button>
+        <button type="button" class="nb-btn" id="nb-export-md-dl">下载 Markdown 规划表</button>
+        <button type="button" class="nb-btn" id="nb-export-md-copy">复制 Markdown</button>
+      </div>
+      <div class="nb-field" style="margin-top:10px;">
+        <label for="nb-md-preview">Markdown 预览</label>
+        <textarea class="nb-textarea" id="nb-md-preview" readonly rows="5"></textarea>
+      </div>
+    </div>
+
+    <div class="nb-dialog-section">
+      <h3>从 JSON 备份恢复</h3>
+      <div class="nb-field">
+        <label for="nb-import-file">选择 `.json` 备份文件，或直接在下方粘贴 JSON</label>
+        <input type="file" id="nb-import-file" accept=".json,application/json" />
+      </div>
+      <div class="nb-field" style="margin-top:8px;">
+        <textarea class="nb-textarea" id="nb-import-text" placeholder="粘贴之前导出的 JSON 备份内容..." rows="4"></textarea>
+      </div>
+      <div class="nb-toolbar" style="margin-top:10px;">
+        <button type="button" class="nb-btn" id="nb-import-preview-btn">校验并预览差异</button>
+        <button type="button" class="nb-btn nb-btn-subtle" id="nb-import-undo-btn" hidden>撤销上一次导入</button>
+      </div>
+      <div class="nb-preview-box" id="nb-import-preview-box" hidden></div>
+      <div class="nb-radio-list" id="nb-import-options" hidden>
+        <label><input type="radio" name="nb-import-strategy" value="merge_keep" checked /> 合并导入（同 ID 冲突时保留本机现有数据）</label>
+        <label><input type="radio" name="nb-import-strategy" value="merge_overwrite" /> 合并导入（同 ID 冲突时用备份覆盖）</label>
+        <label><input type="radio" name="nb-import-strategy" value="replace" /> 完全覆盖当前全部记事本数据</label>
+        <button type="button" class="nb-btn nb-btn-primary" id="nb-import-confirm-btn" style="align-self:flex-start;margin-top:6px;">确认执行导入</button>
+      </div>
+    </div>
+
+    <div class="nb-dialog-section">
+      <h3>重置本地存储</h3>
+      <p style="margin:0 0 10px;font-size:12px;color:var(--muted);">清空前建议先下载一份 JSON 备份；点击两次确认后清空全部本地记录。</p>
+      <button type="button" class="nb-btn nb-btn-danger" id="nb-clear-all-btn">清空全部本地数据</button>
+    </div>
+  </dialog>
+
+  <div class="nb-toast" id="nb-toast" role="status" aria-live="polite" hidden></div>
+</Base>
+<script src="../../scripts/notebook.ts"></script>
