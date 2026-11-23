@@ -63,7 +63,7 @@ demo: false
 npm.cmd run export-preview
 ```
 
-该命令会先构建，再更新当前项目中的 `outputs/首页预览.html`。常规静态构建产物在 `dist/`，以后可上传至静态托管平台；本次没有部署或购买服务。
+该命令会先构建，再更新当前项目中的 `outputs/首页预览.html`。GitHub Actions 构建静态产物到 `dist/`，再部署到 GitHub Pages。
 
 如果以后更换正文背景图，离线预览会将它一并嵌入。不要直接编辑生成的 HTML，修改源码或 Markdown 后重新导出。
 
