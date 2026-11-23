@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { sitePath } from '../../../site.config';
+import '../../../styles/writing.css';
+
+const entries = await getCollection('cet6Translation');
+entries.sort((a, b) => a.data.order - b.data.order);
+const rendered = await Promise.all(entries.map(async entry => ({ ...entry, ...await render(entry) })));
+const translations = rendered.filter(({ data }) => data.kind === 'translation');
+const techniques = rendered.flatMap(({ id, data, Content }) => (
+  data.kind === 'technique' ? [{ id, data, Content }] : []
+));
+---
+
+<Base title="六级翻译知识库">
+  <a href={sitePath('/learning/')}>← 返回学习记录</a>
+  <h1 id="translation-heading">六级翻译知识库</h1>
+  <section id="translation-library" class="writing-library" aria-labelledby="translation-heading">
+    <p id="translation-navigation-status" class="writing-intro" role="status"></p>
+    {rendered.length === 0 ? <p class="page-intro">暂无六级翻译笔记。</p> : (
+      <div class="writing-layout">
+        <aside class="writing-aid glass-card">
+          <details id="translation-directory">
+            <summary class="writing-aid-toggle">
+              篇目与译法目录 <span aria-hidden="true">⌄</span>
+            </summary>
+            <nav class="writing-catalog" aria-label="篇目与译法目录">
+              {translations.length > 0 && <>
+                <p class="writing-small">翻译篇目</p>
+                <ul>{translations.map(({ id, data }) => <li><a href={'#' + id}>{data.title}</a></li>)}</ul>
+              </>}
+              {techniques.length > 0 && <>
+                <p class="writing-small">译法讲解</p>
+                <ul>{techniques.map(({ id, data }) => <li><a href={'#' + id}>{data.title}</a></li>)}</ul>
+              </>}
+            </nav>
+          </details>
+        </aside>
+        <div class="writing-reading">
+          <h2 class="writing-group-heading">翻译篇目</h2>
+          {translations.length === 0 && <p class="writing-intro">暂无翻译篇目。</p>}
+          {translations.map(({ id, data, Content }) => (
+            <details id={id} class="writing-essay glass-card" tabindex="-1">
+              <summary><strong>{data.title}</strong><span class="writing-fold-icon" aria-hidden="true">+</span></summary>
+              <div class="writing-prose"><Content /></div>
+            </details>
+          ))}
+          <h2 class="writing-group-heading">译法讲解</h2>
+          {techniques.length === 0 && <p class="writing-intro">暂无译法讲解。</p>}
+          {techniques.map(({ id, data, Content }) => (
+            <section id={id} class="writing-pattern glass-card" tabindex="-1" aria-labelledby={id + '-heading'}>
+              <h3 id={id + '-heading'} class="technique-heading">{data.title}</h3>
+              <div class="writing-prose"><Content /></div>
+              <div class="writing-examples">
+                <h4>篇目例句</h4>
+                {data.examples.length === 0 ? <p class="writing-intro">暂无引用此译法的篇目。</p> : (
+                  <ul>
+                    {data.examples.map(example => (
+                      <li>
+                        <a href={'#' + example.id}>
+                          <span>{example.translationTitle} · 第 {example.id.split('-').at(-1)} 处标注</span>
+                          <q lang="en">{example.excerpt}</q>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+  <script>
+    import { initLibraryNavigation } from '../../../scripts/library-navigation';
+
+    initLibraryNavigation(
+      'translation-library',
+      'translation-navigation-status',
+      /^(tr-|tf-|occ-tr-)/,
+      '未找到该位置，请从篇目与译法目录重新选择。',
+    );
+    const directory = document.querySelector<HTMLDetailsElement>('#translation-directory');
+    if (directory) {
+      const wide = matchMedia('(min-width:1101px)');
+      directory.open = wide.matches;
+      wide.addEventListener('change', event => { directory.open = event.matches; });
+    }
+  </script>
+</Base>
+
+<style>
+  #translation-navigation-status:empty { margin: 0; }
+  #translation-directory > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #translation-directory[open] > summary span { transform: rotate(180deg); }
+  .writing-catalog ul:last-child { margin-bottom: 0; }
+  .technique-heading { font: 400 23px var(--serif); margin: 0 0 12px; }
+  .writing-examples h4 { font-weight: 500; font-size: 12px; margin: 0 0 12px; color: #6b5643; }
+  .writing-prose :global(a[id^="occ-tr-"]) { scroll-margin-top: 120px; }
+  .writing-prose :global(a[id^="occ-tr-"]:target) { background: #eee9df; }
+</style>

@@ -9,16 +9,18 @@
     "preview": "astro preview --host 127.0.0.1",
     "export-preview": "node scripts/export-preview.mjs",
     "check:interactions": "node --test scripts/check-interactions.mjs",
-    "update:notes": "npm run sync:categories && npm run check:categories && npm run check:interactions && npm run check:writing && npm run export-preview",
+    "update:notes": "npm run sync:categories && npm run check:categories && npm run check:interactions && npm run check:writing && npm run check:cet6-translation && npm run export-preview",
     "check:writing": "node --test scripts/check-writing.mjs",
     "sync:categories": "node scripts/sync-categories.mjs",
-    "check:categories": "node --test scripts/check-categories.mjs"
+    "check:categories": "node --test scripts/check-categories.mjs",
+    "check:cet6-translation": "node --test scripts/check-cet6-translation.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.7",
     "astro": "7.4.8",
     "parse5": "8.1.1",
-    "rehype-raw": "7.0.0"
+    "rehype-raw": "7.0.0",
+    "mdast-util-from-markdown": "2.1.0"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"
