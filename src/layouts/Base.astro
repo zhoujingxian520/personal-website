@@ -1,5 +1,5 @@
 ---
-import {site} from '../site.config';
+import {site,sitePath} from '../site.config';
 import '../styles/global.css';
 import '../styles/pages.css';
 const {title='项目与学习手记',home=false}=Astro.props;
@@ -10,8 +10,8 @@ const nav=[{href:'/',name:'首页',icon:'home'},{href:'/projects/',name:'项目'
     <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="description" content="一个收藏项目、记录学习与灵感的个人空间。"/>
     <meta name="theme-color" content="#f2ede7"/><title>{title} · {site.name}</title>
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-    <link rel="preload" as="image" href={site.cover}/>
+    <link rel="icon" type="image/svg+xml" href={sitePath('/favicon.svg')}/>
+    <link rel="preload" as="image" href={sitePath(site.cover)}/>
   </head>
 <body>    <svg class="icon-definitions" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
       <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v11h5v-7h4v7h5V9"/></symbol>
@@ -26,11 +26,11 @@ const nav=[{href:'/',name:'首页',icon:'home'},{href:'/projects/',name:'项目'
     <nav class="radial-nav" aria-label="主导航">
       <button id="menu-toggle" class="menu-toggle" aria-label="展开导航" aria-expanded="false" aria-controls="radial-links"><span></span><span></span></button>
       <div id="radial-links" class="radial-links" inert>
-        {nav.map((item, i) => <a href={item.href} style={`--item:${i}`} class="radial-item" tabindex="-1"><svg><use href={`#i-${item.icon}`}/></svg><span>{item.name}</span></a>)}
+        {nav.map((item, i) => <a href={sitePath(item.href)} style={`--item:${i}`} class="radial-item" tabindex="-1"><svg><use href={`#i-${item.icon}`}/></svg><span>{item.name}</span></a>)}
       </div>
     </nav>
-    <header class="site-header"><a href="/" class="wordmark">{site.name}<span class="wordmark-dot">.</span></a><div class="header-right"><a href="/projects/">项目</a><a href="/learning/">学习手记</a><a href="/notebook/">记事本</a></div></header>
+    <header class="site-header"><a href={sitePath('/')} class="wordmark">{site.name}<span class="wordmark-dot">.</span></a><div class="header-right"><a href={sitePath('/projects/')}>项目</a><a href={sitePath('/learning/')}>学习手记</a><a href={sitePath('/notebook/')}>记事本</a></div></header>
 
-<main id="main-content"><slot name="hero"/><div class="content-world" style={site.background?`--world-image: url('${site.background}')`:undefined} data-background={site.background?'image':'placeholder'}>{site.background&&<div class="world-backdrop" aria-hidden="true"/>}<div class:list={['content-inner',!home&&'subpage']}><slot/><footer><a href="/" class="footer-brand">{site.name}</a><p>愿每一份好奇，都有回响。</p><a href="/" class="back-top">返回首页 ↑</a><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span></div></footer></div></div></main>
+<main id="main-content"><slot name="hero"/><div class="content-world" style={site.background?`--world-image: url('${sitePath(site.background)}')`:undefined} data-background={site.background?'image':'placeholder'}>{site.background&&<div class="world-backdrop" aria-hidden="true"/>}<div class:list={['content-inner',!home&&'subpage']}><slot/><footer><a href={sitePath('/')} class="footer-brand">{site.name}</a><p>愿每一份好奇，都有回响。</p><a href={sitePath('/')} class="back-top">返回首页 ↑</a><div class="footer-bottom"><span>© {new Date().getFullYear()} {site.name}</span></div></footer></div></div></main>
 <script src="../scripts/navigation.ts"/>
 </body></html>

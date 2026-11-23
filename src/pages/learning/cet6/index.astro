@@ -1,5 +1,6 @@
 ---
+import {sitePath} from '../../../site.config';
 import Base from '../../../layouts/Base.astro';
 import WritingLibrary from '../../../components/WritingLibrary.astro';
 ---
-<Base title="六级写作知识库"><a href="/learning/">← 返回学习记录</a><WritingLibrary/></Base>
+<Base title="六级写作知识库"><a href={sitePath('/learning/')}>← 返回学习记录</a><WritingLibrary/></Base>

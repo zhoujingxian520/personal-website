@@ -2,22 +2,22 @@
 import Base from '../layouts/Base.astro';
 import SummaryCard from '../components/SummaryCard.astro';
 import {getCollection} from 'astro:content';
-import {site} from '../site.config';
+import {site,sitePath} from '../site.config';
 const projects=(await getCollection('projects')).sort((a,b)=>a.data.order-b.data.order).slice(0,3);
 const learning=(await getCollection('learning')).sort((a,b)=>b.data.updated.localeCompare(a.data.updated)||a.data.order-b.data.order||a.id.localeCompare(b.id)).slice(0,3);
 ---
 <Base home>
       <section slot="hero" class="hero" id="home" aria-label="首页封面">
-        <img class="cover-image" src={site.cover} alt="绘梨衣坐在花田中，面向金粉色天空与远处的落日" width="1915" height="821" fetchpriority="high"/>
+        <img class="cover-image" src={sitePath(site.cover)} alt="绘梨衣坐在花田中，面向金粉色天空与远处的落日" width="1915" height="821" fetchpriority="high"/>
         <div class="hero-shade"></div>
         <div class="hero-message"><p class="eyebrow">A LITTLE WORLD OF MY OWN</p><h1 aria-label={site.welcome}><span class="sr-only">{site.welcome}</span><span id="typewriter" aria-hidden="true" data-text={site.welcome}>{site.welcome}</span><span class="cursor" aria-hidden="true"></span></h1><p class="hero-subtitle">收藏热爱，记录每一次生长。</p></div>
         <a class="scroll-cue" href="#projects" aria-label="向下探索项目"><span>向下，看看我的世界</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></a>
         <div class="hero-bottom"><span>PROJECTS, NOTES & LITTLE WONDERS</span><span>保持好奇 · 慢慢生长</span></div>
       </section>
 
-<section id="projects" class="summary-section"><div class="section-heading"><h2>把想法，变成作品。</h2><a href="/projects/">查看全部项目 →</a></div>{projects.map(entry=><SummaryCard entry={entry} kind="project"/>)}{projects.length===0&&<p>项目正在酝酿中。</p>}</section>
-<section id="learning" class="summary-section"><div class="section-heading"><h2>每天，多理解一点。</h2><a href="/learning/">查看全部学习记录 →</a></div>{learning.map(entry=><SummaryCard entry={entry} kind="learning"/>)}{learning.length===0&&<p>学习记录尚待整理。</p>}<a class="brief-entry glass-card" href="/learning/cet6/">六级写作知识库 <span>连接句型与语境 →</span></a></section>
-{site.skillTree.enabled&&<section id="skill-tree" class="summary-section"><a class="brief-entry glass-card" href="/skill-tree/">算法技能树 <span>未来，让知识生长成树 →</span></a></section>}
-<a id="legacy-writing-destination" href="/learning/cet6/" hidden>知识库</a>
+<section id="projects" class="summary-section"><div class="section-heading"><h2>把想法，变成作品。</h2><a href={sitePath('/projects/')}>查看全部项目 →</a></div>{projects.map(entry=><SummaryCard entry={entry} kind="project"/>)}{projects.length===0&&<p>项目正在酝酿中。</p>}</section>
+<section id="learning" class="summary-section"><div class="section-heading"><h2>每天，多理解一点。</h2><a href={sitePath('/learning/')}>查看全部学习记录 →</a></div>{learning.map(entry=><SummaryCard entry={entry} kind="learning"/>)}{learning.length===0&&<p>学习记录尚待整理。</p>}<a class="brief-entry glass-card" href={sitePath('/learning/cet6/')}>六级写作知识库 <span>连接句型与语境 →</span></a></section>
+{site.skillTree.enabled&&<section id="skill-tree" class="summary-section"><a class="brief-entry glass-card" href={sitePath('/skill-tree/')}>算法技能树 <span>未来，让知识生长成树 →</span></a></section>}
+<a id="legacy-writing-destination" href={sitePath('/learning/cet6/')} hidden>知识库</a>
 <script src="../scripts/home.ts"/>
 </Base>

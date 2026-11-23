@@ -6,3 +6,8 @@ export const site = {
   background: '/images/background.webp',
   skillTree: { enabled: true, implemented: false, href: '#skill-tree' },
 };
+
+export function sitePath(path: string) {
+  if (!path.startsWith('/') || path.startsWith('//')) return path;
+  return import.meta.env.BASE_URL.replace(/\/$/, '') + path;
+}

@@ -1,10 +1,11 @@
 ---
+import {sitePath} from '../site.config';
 const {entry,kind}=Astro.props;
 const d=entry.data;
 const href=kind==='project'?`/projects/${entry.id}/`:`/learning/notes/${entry.id}/`;
 ---
 <article class="summary-card glass-card note-summary" data-status={d.status}>
-<h3><a href={href}>{d.title}</a></h3>
+<h3><a href={sitePath(href)}>{d.title}</a></h3>
 <div class="summary-meta">{d.updated&&<time datetime={d.updated}>{d.updated}</time>}<span>{d.status}</span>{d.topic&&<span>{d.topic}</span>}{d.tags?.map(t=><span>{t}</span>)}{d.demo&&<span>示例</span>}</div>
-<p>{d.description}</p><a class="read-more" href={href}>阅读全文 →</a>
+<p>{d.description}</p><a class="read-more" href={sitePath(href)}>阅读全文 →</a>
 </article>
