@@ -87,7 +87,7 @@ npm.cmd run export-preview
 
 ## 按指令更新学习笔记
 
-详见 [学习记录更新流程](docs/学习记录更新流程.md)。提供材料后，让助手整理 Markdown、运行 `npm.cmd run update:notes`、检查并提交推送即可。该命令只检查并导出，不自动生成笔记或提交 Git；没有定时更新。当前仅本地阅读，无需 Obsidian，离线页面要在重新导出后刷新。
+详见 [学习记录更新流程](docs/学习记录更新流程.md)。提供材料后，让助手整理 Markdown、运行 `npm.cmd run update:notes`、检查并提交推送即可。该命令只检查并导出，不自动生成笔记或提交 Git；推送 main 会触发 GitHub Actions 自动部署。线上网站在部署成功后刷新即可看到更新，离线页面要在重新导出后刷新。[访问网站](https://zhoujingxian520.github.io/personal-website/)
 
 ## 六级写作知识库
 
