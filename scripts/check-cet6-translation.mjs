@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { parseCet6Translation } from '../src/lib/cet6-translation.mjs';
 
-const template = readFileSync(new URL('../docs/templates/六级翻译笔记模板.md', import.meta.url), 'utf8');
+const template = readFileSync(new URL('../docs/templates/六级翻译笔记模板.md', import.meta.url), 'utf8').replace(/\r\n?/g, '\n');
 const sample = template.split('```markdown')[1].split('```')[0].trim();
 const lineOf = (input, text) => input.split('\n').findIndex(line => line.includes(text)) + 1;
 

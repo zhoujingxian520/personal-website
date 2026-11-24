@@ -1,0 +1,41 @@
+---
+import Infra from '../../../layouts/Infra.astro';
+import PersonalData from '../../../components/infra/PersonalData.astro';
+import MasteryControl from '../../../components/infra/MasteryControl.astro';
+import { loadInfra, projectUrl, knowledgeUrl, infraManifest } from '../../../lib/infra';
+import '../../../styles/infra.css';
+const model = await loadInfra();
+const units = [...model.units].sort((a,b) => a.data.order-b.data.order);
+const progressUnits = units.map(({data}) => ({unitId: data.unitId, version: model.projectById.get(data.projectId).data.contentVersion}));
+---
+<Infra title="AI Infra 简单学习路线">
+  <h1>一步一步，学懂一个项目</h1>
+  <p>按建议顺序阅读、做实验和自检；可以跳过任一步，全部内容始终开放。</p>
+  <p data-progress-units={JSON.stringify(progressUnits)}>已学会 0 / {units.length}</p>
+  <p>是否学会由你判断，阅读页面不会自动标记。修改状态后，已绑定文件会自动保存；未绑定时只保留草稿。</p>
+  {units.length === 0 && <p>暂无学习路线，先去专区看看项目。</p>}
+  <div class="infra-review-controls"><label><input type="checkbox" data-only-unlearned />只看未学会</label> <button type="button" data-reset-review>清除筛选</button></div>
+  <p data-route-empty hidden>当前没有匹配的单元，可清除筛选查看全部。</p>
+  <ol class="infra-roadmap">
+    {units.map(({data: unit}) => {
+      const project = model.projectById.get(unit.projectId).data;
+      return <li class="glass-card" data-route-unit={unit.unitId} data-version={project.contentVersion}>
+        <h2><a href={`${projectUrl(unit.projectId)}#${unit.unitId}`}>{unit.title}</a></h2>
+        <p>{project.title}{project.demo && ' · 教学示例'}</p>
+        <ul>{unit.questions.map(question => <li>{question}</li>)}</ul>
+        <MasteryControl unitId={unit.unitId} version={project.contentVersion} />
+        <p><a href={`${projectUrl(unit.projectId)}#${unit.fragmentIds[0] || unit.unitId}`}>阅读代码与写批注</a> · <a href={`${projectUrl(unit.projectId)}#infra-experiment`}>动手实验与记录</a></p>
+      </li>;
+    })}
+  </ol>
+  <section class="glass-card"><h2>带疑问的笔记</h2><p>在批注中写“？”、“疑问”或“不懂”，即可在这里找到返回入口。</p>
+    <p data-question-empty>暂无带疑问的笔记。先回到代码写下你的问题。</p>
+    <ul>{[...model.blockById, ...model.fragmentById].map(([id, item]) => <li data-question-note={id} hidden><a href={`${projectUrl(item.project.data.projectId)}#${id}`}>{item.title || item.file} · {item.project.data.title}</a><p data-note-excerpt></p></li>)}</ul>
+  </section>
+  <section class="glass-card"><h2>查找知识</h2><label>知识关键词<input type="search" data-knowledge-search placeholder="输入知识名称或关键词" /></label>
+    <ul>{model.knowledge.map(({data}) => <li data-review-knowledge><a href={knowledgeUrl(data.knowledgeId)}>{data.title}</a> — {data.description}</li>)}</ul><p data-knowledge-empty hidden>暂无匹配知识，清空关键词即可恢复。</p>
+  </section>
+  <PersonalData manifest={infraManifest(model)} />
+  <noscript><p>当前仍可阅读路线；启用 JavaScript 后可手动标记学习状态。</p></noscript>
+</Infra>
+<script src="../../../scripts/infra-notes.ts" />

@@ -1,0 +1,7 @@
+---
+const { unitId, version } = Astro.props;
+---
+<div data-mastery-control hidden class="infra-mastery-control">
+  <label><input type="checkbox" data-infra-mastery data-unit-id={unitId} data-version={version} /> 我确认已学会这个单元</label>
+  <span data-mastery-label>未学会</span>
+</div>

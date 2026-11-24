@@ -1,0 +1,18 @@
+---
+const { manifest } = Astro.props;
+---
+<section id="infra-personal-data" class="infra-personal-data" data-personal-data data-manifest={JSON.stringify(manifest)} hidden>
+  <h2>个人记录与备份</h2>
+  <p>选择电脑上的 JSON 笔记文件后，编辑会自动写回同一个文件。刷新或重新打开网页后，请再次打开该文件。</p>
+  <div class="infra-form-actions"><button type="button" data-new-notebook>新建笔记文件</button><button type="button" data-open-notebook>打开笔记文件</button><button type="button" data-save-notebook>立即保存到文件</button></div>
+  <p data-notebook-status role="status" aria-live="polite"></p>
+  <p data-storage-status role="status"></p>
+  <button type="button" data-export-records>下载一份备份（含草稿）</button>
+  <label for="infra-backup-file">导入 JSON 备份<input id="infra-backup-file" type="file" accept=".json,application/json" data-import-file /></label>
+  <div data-import-preview hidden>
+    <p data-import-summary></p><ul data-import-missing></ul>
+    <label><input type="checkbox" data-import-overwrite />覆盖冲突记录（默认保留本地）</label>
+    <button type="button" data-confirm-import>确认导入</button> <button type="button" data-cancel-import>取消导入</button>
+  </div>
+  <p data-backup-status role="status" aria-live="polite"></p>
+</section>

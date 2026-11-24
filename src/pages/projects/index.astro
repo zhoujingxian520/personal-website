@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import SummaryCard from '../../components/SummaryCard.astro';
 import {getCollection} from 'astro:content';
+import {sitePath} from '../../site.config';
 const entries=(await getCollection('projects')).sort((a,b)=>a.data.order-b.data.order);
 ---
-<Base title="项目"><h1>项目</h1><p class="page-intro">把想法变成作品，记录每一次尝试。</p>{entries.map(entry=><SummaryCard entry={entry} kind="project"/>)}<p id="learning-empty" class="empty-message" hidden={entries.length>0}>暂无对应记录。</p></Base>
+<Base title="项目"><h1>项目</h1><p class="page-intro">把想法变成作品，记录每一次尝试。</p><aside class="glass-card" style="padding:1.5rem;margin-bottom:1.5rem"><h2><a href={sitePath('/projects/ai-infra/')}>AI Infra 项目学习专区 →</a></h2><p>从纯 Python 小项目开始，结合代码、知识讲解与自检逐步学习。</p></aside>{entries.map(entry=><SummaryCard entry={entry} kind="project"/>)}<p id="learning-empty" class="empty-message" hidden={entries.length>0}>暂无对应记录。</p></Base>

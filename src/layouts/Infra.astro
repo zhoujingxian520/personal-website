@@ -1,0 +1,17 @@
+---
+import Base from './Base.astro';
+import { sitePath } from '../site.config';
+const { title } = Astro.props;
+---
+<Base title={title}>
+  <nav aria-label="AI Infra 导航"><a href={sitePath('/projects/')}>所有项目</a> · <a href={sitePath('/projects/ai-infra/')}>AI Infra 学习专区</a></nav>
+  <div class="infra-reading"><slot /></div>
+</Base>
+<style is:global>
+  .infra-reading {max-width: 920px; margin: 1.5rem auto; overflow-wrap: anywhere;}
+  .infra-reading .glass-card {padding: clamp(1rem, 3vw, 2rem); margin: 1.25rem 0;}
+  .infra-reading pre {max-width: 100%; overflow-x: auto; padding: 1rem; border-radius: .6rem; background: #232830; color: #f7f7f7;}
+  .infra-reading section {scroll-margin-top: 5rem;}
+  .infra-reading dt {font-weight: 600;}
+  .infra-reading dd {margin: .25rem 0 1rem;}
+</style>

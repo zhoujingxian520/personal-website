@@ -1,0 +1,56 @@
+---
+import { render } from 'astro:content';
+import Infra from '../../../../layouts/Infra.astro';
+import { loadInfra, infraManifest } from '../../../../lib/infra';
+import { sitePath } from '../../../../site.config';
+import CodeReader from '../../../../components/infra/CodeReader.astro';
+import NoteForm from '../../../../components/infra/NoteForm.astro';
+import PersonalData from '../../../../components/infra/PersonalData.astro';
+import MasteryControl from '../../../../components/infra/MasteryControl.astro';
+import '../../../../styles/infra.css';
+export async function getStaticPaths() {
+  const model = await loadInfra();
+  return model.projects.map(entry => ({params: {id: entry.data.projectId}, props: {entry, model}}));
+}
+const { entry, model } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+const manifest = infraManifest(model);
+---
+<Infra title={data.title}>
+  <article class="glass-card">
+    <h1>{data.title}</h1><p>{data.description}</p>
+    <p>{data.demo && '教学示例 · '}{data.materialStatus} · 内容版本 {data.contentVersion}</p>
+    <dl><dt>运行环境</dt><dd>Python {data.environment.python}；{data.environment.platforms.join(' / ')}；{data.environment.device}；{data.environment.dependencies.length ? data.environment.dependencies.join('、') : '无需第三方依赖'}</dd>
+    <dt>所需基础</dt><dd>{data.prerequisites.join('、') || '无需额外基础'}</dd>
+    <dt>来源</dt><dd>{data.source.reference}（{data.source.version}）</dd></dl>
+    <div class="markdown-content"><Content /></div>
+    <h2>代码与关联知识</h2>
+    {data.blocks.length === 0 && <p>暂无代码块。</p>}
+    <p data-infra-navigation-status role="status" aria-live="polite"></p>
+    {data.blocks.map(block => <CodeReader block={model.blockById.get(block.blockId)} fragments={data.fragments.filter(fragment => fragment.blockId === block.blockId)} knowledgeById={model.knowledgeById} version={data.contentVersion} source={data.source.reference} />)}
+    <h2>学习单元与自检</h2>
+    <p><a href={sitePath('/projects/ai-infra/roadmap/')}>查看简单学习路线 →</a></p>
+    <p data-progress-units={JSON.stringify(data.unitIds.map(unitId => ({unitId, version: data.contentVersion})))}>已学会 0 / {data.unitIds.length}</p>
+    {data.unitIds.length === 0 && <p>暂无学习单元。</p>}
+    {data.unitIds.map(id => model.unitById.get(id)).sort((a,b) => a.data.order-b.data.order).map(({data: unit}) => <section id={unit.unitId}>
+      <h3>{unit.title}</h3><ul>{unit.fragmentIds.map(id => <li><a href={`#${id}`}>{model.fragmentById.get(id).title}</a></li>)}</ul>
+      <ol>{unit.questions.map(question => <li>{question}</li>)}</ol>
+      <MasteryControl unitId={unit.unitId} version={data.contentVersion} />
+      <p><a href="#infra-experiment">记录实验</a> · {unit.fragmentIds.map(id => <a href={`#${id}`}>返回片段与批注 </a>)}</p>
+    </section>)}
+    <section id="infra-experiment"><h2>我的实验记录</h2><p>请填写你实际运行后的结果，教学预期不会自动写入个人记录。</p>
+      <NoteForm targetId={data.projectId} projectId={data.projectId} version={data.contentVersion} kind="experiments" title="基线实验：预测、运行与解释" />
+      <details><summary>记录第二次实验（变体）</summary><NoteForm targetId={`${data.projectId}-variant`} projectId={data.projectId} version={data.contentVersion} kind="experiments" title="变体实验：只改变一个因素" /></details>
+      <section data-experiment-comparison={data.projectId}><h3>基线与变体对比</h3><p data-comparison-message>请先填写两条记录；不会自动判断优化是否成功。</p>
+        <div class="infra-comparison-scroll"><table><thead><tr><th scope="col">项目</th><th scope="col">基线</th><th scope="col">变体</th></tr></thead><tbody>
+          {[['environment','条件与命令'],['correctness','正确性'],['elapsed','耗时'],['memory','内存'],['observation','输出与观察'],['conclusion','解释与排错']].map(([field,label]) => <tr><th scope="row">{label}</th><td data-side="baseline" data-comparison-field={field}>未记录</td><td data-side="variant" data-comparison-field={field}>未记录</td></tr>)}
+        </tbody></table></div>
+      </section>
+    </section>
+    <PersonalData manifest={manifest} />
+    <noscript><p>启用 JavaScript 后可保存个人记录；当前仍可阅读教学内容。</p></noscript>
+  </article>
+</Infra>
+<script src="../../../../scripts/infra-navigation.ts" />
+<script src="../../../../scripts/infra-notes.ts" />

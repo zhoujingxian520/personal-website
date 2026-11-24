@@ -1,0 +1,12 @@
+---
+const { targetId, projectId, version, title = '个人批注', kind = 'notes' } = Astro.props;
+const fields = kind === 'notes' ? [['text', '我的理解与疑问']] : [['prediction', '运行前预测'], ['environment', '实际环境与运行命令'], ['observation', '实际输出与观察'], ['correctness', '正确性检查'], ['elapsed', '耗时（注明单位，如 ms）'], ['memory', '内存（选填，注明单位，如 MiB）'], ['conclusion', '解释与排错（现象 → 假设 → 验证 → 结论）']];
+---
+<form class="infra-personal-form" data-personal-form data-kind={kind} data-target-id={targetId} data-project-id={projectId} data-version={version} hidden>
+  <h4>{title}</h4>
+  <p data-record-review hidden></p>
+  {fields.map(([name,label]) => <label for={`${targetId}-${name}`}>{label}<textarea id={`${targetId}-${name}`} name={name} rows={kind === 'notes' ? 4 : 3}></textarea></label>)}
+  <div class="infra-form-actions"><button type="submit">立即保存</button><button type="button" data-delete-record>删除记录</button></div>
+  <div data-delete-confirm hidden><p>确认删除这条个人记录？</p><button type="button" data-confirm-delete>确认删除</button> <button type="button" data-cancel-delete>取消</button></div>
+  <p data-record-status role="status" aria-live="polite">尚无个人记录</p>
+</form>

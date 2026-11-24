@@ -1,0 +1,20 @@
+---
+import { render } from 'astro:content';
+import Infra from '../../../../layouts/Infra.astro';
+import { loadInfra, projectUrl } from '../../../../lib/infra';
+export async function getStaticPaths() {
+  const model = await loadInfra();
+  return model.knowledge.map(entry => ({params: {id: entry.data.knowledgeId}, props: {entry, appearances: model.appearances.get(entry.data.knowledgeId)}}));
+}
+const { entry, appearances } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+---
+<Infra title={data.title}>
+  <article class="glass-card"><h1>{data.title}</h1><p>{data.description}</p>{data.demo && <p>教学示例</p>}
+    <div class="markdown-content"><Content /></div>
+    <h2>在哪些代码中出现</h2>
+    {appearances.length === 0 ? <p>暂无关联代码实例。</p> : <ul>{appearances.map(fragment => <li><a href={`${projectUrl(fragment.project.data.projectId)}#${fragment.fragmentId}`}>{fragment.project.data.title} · {fragment.title}</a>（{fragment.block.file} 第 {fragment.startLine}—{fragment.endLine} 行）</li>)}</ul>}
+    <h2>资料出处</h2><ul>{data.sources.map(url => <li><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>)}</ul>
+  </article>
+</Infra>

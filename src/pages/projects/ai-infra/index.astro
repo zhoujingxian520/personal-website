@@ -1,0 +1,22 @@
+---
+import Infra from '../../../layouts/Infra.astro';
+import { loadInfra, projectUrl, knowledgeUrl } from '../../../lib/infra';
+import { sitePath } from '../../../site.config';
+const { projects, knowledge } = await loadInfra();
+---
+<Infra title="AI Infra 学习专区">
+  <h1>从一个小项目开始理解 AI Infra</h1>
+  <p class="page-intro">先读懂输入与输出，再动手实验，逐步理解代码背后的知识。</p>
+  <p><a href={sitePath('/projects/ai-infra/roadmap/')}>打开简单学习路线 →</a></p>
+  <h2>可学习项目</h2>
+  {projects.length === 0 && <p>暂无学习项目，内容准备好后会出现在这里。</p>}
+  {projects.map(({data}) => <article class="glass-card">
+    <h3><a href={projectUrl(data.projectId)}>{data.title}</a></h3>
+    <p>{data.description}</p>
+    <p>{data.demo && '教学示例 · '}{data.materialStatus}</p>
+    <p>主题：{data.topics.join('、') || '暂无'}<br/>基础：{data.prerequisites.join('、') || '无需额外基础'}<br/>设备：{data.environment.device}；{data.environment.platforms.join(' / ')}</p>
+    <a href={projectUrl(data.projectId)}>查看导学与代码 →</a>
+  </article>)}
+  <h2>关联知识</h2>
+  {knowledge.length === 0 ? <p>暂无知识条目。</p> : <ul>{knowledge.map(({data}) => <li><a href={knowledgeUrl(data.knowledgeId)}>{data.title}</a> — {data.description}</li>)}</ul>}
+</Infra>

@@ -1,0 +1,30 @@
+---
+import { knowledgeUrl } from '../../lib/infra';
+import NoteForm from './NoteForm.astro';
+const { block, fragments, knowledgeById, version, source } = Astro.props;
+---
+<section class="infra-code-reader" id={block.blockId} data-code-reader>
+  <header class="infra-code-heading"><h3>{block.file} · {block.language}</h3><button type="button" data-copy-code data-code={block.code} hidden>复制完整代码</button></header>
+  <p class="infra-code-meta">版本：{version} · 来源：{source}</p>
+  <p>点击带链接的行号或下方片段名称查看讲解。</p>
+  <p class="infra-copy-status" data-copy-status role="status" aria-live="polite"></p>
+  <div class="infra-code-grid">
+    <div class="infra-source" tabindex="0" role="region" aria-label={`${block.file} 源码，可横向滚动`}>
+      <pre><code>{block.code.split('\n').map((line, index) => {
+        const fragment = fragments.find(item => index + 1 >= item.startLine && index + 1 <= item.endLine);
+        return <span class="infra-code-line" data-line={index + 1}>{fragment ? <a class="infra-line-number" href={`#${fragment.fragmentId}`} aria-label={`第 ${index+1} 行：${fragment.title}`}>{index+1}</a> : <span class="infra-line-number" aria-hidden="true">{index+1}</span>}<span data-source-line>{line || ' '}</span></span>;
+      })}</code></pre>
+    </div>
+    <aside class="infra-explanations" aria-label={`${block.file} 片段讲解`}>
+      {fragments.length === 0 && <p>暂无预设片段讲解。</p>}
+      {fragments.map(fragment => <details id={fragment.fragmentId} data-infra-fragment data-start={fragment.startLine} data-end={fragment.endLine} open>
+        <summary>{fragment.title}（{fragment.startLine}—{fragment.endLine} 行）</summary>
+        <p>{fragment.explanation}</p>
+        <a href={`#${fragment.fragmentId}`} class="infra-fragment-link">定位此片段</a>
+        {fragment.knowledgeIds.length === 0 ? <p>暂无关联知识。</p> : <ul>{fragment.knowledgeIds.map(id => <li><a href={knowledgeUrl(id)}>{knowledgeById.get(id).data.title}</a></li>)}</ul>}
+        <NoteForm targetId={fragment.fragmentId} projectId={block.project.data.projectId} version={version} />
+      </details>)}
+    </aside>
+  </div>
+  <NoteForm targetId={block.blockId} projectId={block.project.data.projectId} version={version} title="整段代码的个人批注" />
+</section>
